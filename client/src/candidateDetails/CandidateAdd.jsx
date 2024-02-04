@@ -3,6 +3,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
+const baseUrl = import.meta.env.VITE_BASE_URL
 
 const CandidateAdd = (props) => {
   const [formData, setFormData] = useState({
@@ -77,7 +78,7 @@ useEffect(() => {
   console.log(props)
   const fetchSingleCandidate = async (id) => {
     try{
-      const { data } = await axios.get(`http://localhost:8000/candidates/${id}`)
+      const { data } = await axios.get(`${baseUrl}/candidates/${id}`)
       setFormData({
         name: data.name,
         email: data.email,
@@ -103,15 +104,8 @@ useEffect(() => {
     if(validateForm()){
       setLoading(true)
       try{
-        await axios.post("http://localhost:8000/candidates", formData);
-        setSuccessMessage('Form submitted successfully!');
-        setFailureMessage(null);
-      } catch (error) {
-        console.log(error)
-        setSuccessMessage(null);
-        setFailureMessage('Form submission failed. Please check the errors.');
-      } finally {
-        setLoading(false);
+        if(!props.id){
+          await axios.post(`${baseUrl}/candidates`, formData);
           setFormData({
             name: '',
             email: '',
@@ -122,6 +116,17 @@ useEffect(() => {
             node_experience: '',
             react_experience: '',
           });
+        } else {
+          await axios.put(`${baseUrl}/candidates/${props.id}`, formData);
+        }
+        setSuccessMessage('Form submitted successfully!');
+        setFailureMessage(null);
+      } catch (error) {
+        console.log(error)
+        setSuccessMessage(null);
+        setFailureMessage('Form submission failed. Please check the errors.');
+      } finally {
+        setLoading(false);
       }
     }  else {
       setSuccessMessage(null);

@@ -3,6 +3,8 @@ import axios from "axios";
 import CandidateAdd from "./CandidateAdd";
 import Candidate from "./Candidate";
 
+const baseUrl = import.meta.env.VITE_BASE_URL
+
 const CandidateList = () => {
   const [candidates, setCandidates] = useState([]);
   const [showCandidateForm, setShowCandidateForm] = useState(false);
@@ -13,7 +15,7 @@ const CandidateList = () => {
     const fetchCandidates = async () => {
         try{
 
-            const { data } = await axios.get("http://localhost:8000/candidates");
+            const { data } = await axios.get(`${baseUrl}/candidates`);
             setCandidates(data);
         }
         catch (e) {
